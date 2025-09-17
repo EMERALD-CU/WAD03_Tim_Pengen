@@ -1,0 +1,23 @@
+{
+  "name": "wad03_tim_pengen",
+  "version": "1.0.0",
+  "description": "This repository is provided to meet the needs of the Web Application Development course.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EMERALD-CU/WAD03_Tim_Pengen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EMERALD-CU/WAD03_Tim_Pengen/issues"
+  },
+  "homepage": "https://github.com/EMERALD-CU/WAD03_Tim_Pengen#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
