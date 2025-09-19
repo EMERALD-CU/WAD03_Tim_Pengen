@@ -1,8 +1,10 @@
 // 1. Impor library express
 const express = require('express');
+const greetingRoutes = require('./routes/greetingRoutes');
 
 // 2. Buat instance dari aplikasi express
 const app = express();
+app.use('/greeting', greetingRoutes);
 
 // 3. Tentukan port yang akan digunakan
 const PORT = 3000;
