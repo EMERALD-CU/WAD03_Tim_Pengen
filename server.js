@@ -1,24 +1,32 @@
-// 1. Impor library express
+// server.js
+// 1. Import library Express
 const express = require('express');
-// Impor router untuk "about us"
+
+// 2. Import semua router
 const AboutUsRouter = require('./routes/AboutUsRouter');
 const greetingRoutes = require('./routes/greetingRoutes');
+const userManagementRouter = require('./routes/UserManagementRoutes'); 
 
-// 2. Buat instance dari aplikasi express
+// 3. Buat instance dari Express
 const app = express();
-//Untuk Router About Us
+
+// 4. DAFTARKAN MIDDLEWARE UNTUK PARSING BODY
+// Penting: Middleware ini harus didaftarkan SEBELUM rute
+app.use(express.json()); // Untuk memproses JSON (seperti dari POST/PATCH)
+app.use(express.urlencoded({ extended: true })); // Untuk memproses data dari form HTML
+
+// 5. Daftarkan semua route
 app.use('/aboutus', AboutUsRouter);
 app.use('/greeting', greetingRoutes);
+app.use('/users', userManagementRouter); 
 
-// 3. Tentukan port yang akan digunakan
-const PORT = 3000;
-
-// 4. Buat rute dasar (root route)
+// 6. Root route
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-// 5. Jalankan server agar "mendengarkan" permintaan di port yang ditentukan
+// 7. Tentukan port dan jalankan server
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
