@@ -1,5 +1,22 @@
 // Controllers/UserControllers.js - Menggunakan Internal Dummy Data
 
+// --- MIDDLEWARE isSeller (Baru ditambahkan) ---
+exports.isSeller = (req, res, next) => {
+    // Diasumsikan 'owner' username dikirim dalam body saat modifikasi data
+    const { owner } = req.body; 
+    
+    // Mencari di array 'users' yang didefinisikan di awal file ini
+    const user = users.find(u => u.username === owner); 
+
+    // Cek apakah pengguna ada DAN perannya adalah 'seller'
+    if (!user || user.role !== 'seller') {
+        // 403 Forbidden: Akses ditolak
+        return res.status(403).json({ message: "Access denied. Only Seller can perform this action." });
+    }
+    
+    next(); // Jika lolos, lanjutkan ke fungsi controller berikutnya
+};
+
 // Menggunakan let untuk array data utama (GLOBAL SCOPE CONTROLLER)
 let users = [
     {

@@ -5,7 +5,8 @@ const express = require('express');
 // 2. Import semua router
 const AboutUsRouter = require('./routes/AboutUsRouter');
 const greetingRoutes = require('./routes/greetingRoutes');
-const userManagementRouter = require('./routes/UserManagementRoutes'); 
+const userManagementRouter = require('./routes/UserManagementRoutes');
+const ProductRoutes = require('./routes/ProductRoutes'); 
 
 // 3. Buat instance dari Express
 const app = express();
@@ -18,7 +19,8 @@ app.use(express.urlencoded({ extended: true })); // Untuk memproses data dari fo
 // 5. Daftarkan semua route
 app.use('/aboutus', AboutUsRouter);
 app.use('/greeting', greetingRoutes);
-app.use('/users', userManagementRouter); 
+app.use('/users', userManagementRouter);
+app.use('/products', ProductRoutes); 
 
 // 6. Root route
 app.get('/', (req, res) => {
