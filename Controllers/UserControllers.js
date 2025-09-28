@@ -17,6 +17,22 @@ exports.isSeller = (req, res, next) => {
     next(); // Jika lolos, lanjutkan ke fungsi controller berikutnya
 };
 
+exports.isBuyer = (req, res, next) => {
+    // Ambil username dari parameter URL, karena semua rute cart akan seperti '/:username/...'
+    const { username } = req.params; 
+    
+    // Cari user di data kita
+    const user = users.find(u => u.username === username); 
+
+    // Cek apakah pengguna ada DAN perannya adalah 'buyer'
+    if (!user || user.role !== 'buyer') {
+        // 403 Forbidden: Akses ditolak
+        return res.status(403).json({ message: "Access denied. Only the buyer who owns this cart can perform this action." });
+    }
+    
+    next(); // Jika lolos, lanjutkan ke fungsi controller berikutnya
+};
+
 // Menggunakan let untuk array data utama (GLOBAL SCOPE CONTROLLER)
 let users = [
     {
