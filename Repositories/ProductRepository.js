@@ -1,13 +1,38 @@
-// repositories/productRepository.js
 
-const db = require('../Data/dummyDatabase.js');
+    const dummyDatabase = require('../Data/dummyDatabase');
 
-// Fungsi ini hanya untuk mencari produk berdasarkan nama
-const findByName = (productName) => {
-    return db.products.find(p => p.product_name === productName);
-};
+    class ProductRepository {
+        constructor() {
+            this.products = dummyDatabase.products;
+        }
 
-// Nanti teman Anda akan melengkapi file ini dengan fungsi lain (create, update, dll)
-module.exports = { 
-    findByName 
-};
+        async getAllProducts() {
+            return this.products;
+        }
+
+        async getProductByName(name) {
+            return this.products.find(product => product.product_name === name);
+        }
+
+        async createProduct(newProductData) {
+            this.products.push(newProductData);
+            return newProductData;
+        }
+
+        async updateProduct(name, updatedData) {
+            const index = this.products.findIndex(product => product.product_name === name);
+            if (index > -1) {
+                this.products[index] = { ...this.products[index], ...updatedData };
+                return this.products[index];
+            }
+            return null;
+        }
+
+        async deleteProduct(name) {
+            const initialLength = this.products.length;
+            this.products = this.products.filter(product => product.product_name !== name);
+            return this.products.length < initialLength;
+        }
+    }
+    
+    module.exports = new ProductRepository();
