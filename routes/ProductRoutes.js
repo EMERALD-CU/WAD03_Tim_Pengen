@@ -5,11 +5,11 @@ const productController = require('../Controllers/ProductControllers');
 const authMiddleware = require('../Middleware/AuthMiddleware'); 
 const isSeller = authMiddleware.isSeller; 
 
-router.get('/', productController.getProducts); 
-router.get('/:product_name', productController.getProductByName); 
-router.post('/', userController.isSeller, productController.createProduct); 
-router.patch('/:product_name', isSeller, productController.updateProduct);
-router.put('/:product_name', isSeller, productController.updateProduct); 
-router.delete('/:product_name', isSeller, productController.deleteProduct); 
+router.get('/', productController.getAllProducts);
+router.get('/:name', productController.getProductByName);
+router.post('/', isSeller, productController.createProduct);
+router.patch('/:name', isSeller, productController.updateProduct);
+router.put('/:name', isSeller, productController.updateProduct);
+router.delete('/:name', isSeller, productController.deleteProduct);
 
 module.exports = router;
