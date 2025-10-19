@@ -1,38 +1,34 @@
+const {db} = require('../database');
+const { Product } = db;
 
-    const dummyDatabase = require('../Data/dummyDatabase');
+class ProductRepository {
 
-    class ProductRepository {
-        constructor() {
-            this.products = dummyDatabase.products;
-        }
-
-        async getAllProducts() {
-            return this.products;
-        }
-
-        async getProductByName(name) {
-            return this.products.find(product => product.product_name === name);
-        }
-
-        async createProduct(newProductData) {
-            this.products.push(newProductData);
-            return newProductData;
-        }
-
-        async updateProduct(name, updatedData) {
-            const index = this.products.findIndex(product => product.product_name === name);
-            if (index > -1) {
-                this.products[index] = { ...this.products[index], ...updatedData };
-                return this.products[index];
-            }
-            return null;
-        }
-
-        async deleteProduct(name) {
-            const initialLength = this.products.length;
-            this.products = this.products.filter(product => product.product_name !== name);
-            return this.products.length < initialLength;
-        }
+    async getAllProducts() {
+        return await Product.findAll();
     }
-    
-    module.exports = new ProductRepository();
+
+    async getProductByName(name) {
+        return await Product.findOne({ where: { product_name: name } }); 
+    }
+
+    async createProduct(newProductData) {
+        return await Product.create(newProductData);
+    }
+
+    async updateProduct(name, updatedData) {
+        const product = await Product.findOne({ where: { product_name: name } });
+        if (product) {
+            return await product.update(updatedData);
+        }
+        return null;
+    }
+
+    async deleteProduct(name) {
+        const result = await Product.destroy({
+            where: { product_name: name }
+        });
+        return result > 0;
+    }
+}
+
+module.exports = new ProductRepository();

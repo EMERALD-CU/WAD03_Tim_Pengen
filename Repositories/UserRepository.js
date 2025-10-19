@@ -1,13 +1,23 @@
-// repositories/userRepository.js
+const {db} = require('../database');
+const { User } = db.User;
 
-const db = require('../Data/dummyDatabase.js');
+class UserRepository {
 
-// Fungsi ini hanya untuk mencari user berdasarkan username
-const findByUsername = (username) => {
-    return db.users.find(u => u.username === username);
-};
+    async findByUsername(username) {
+        return await User.findOne({
+            where: {
+                username: username
+            }
+        });
+    }
 
-// Nanti teman Anda akan melengkapi file ini dengan fungsi lain (create, update, dll)
-module.exports = { 
-    findByUsername 
-};
+    async getAllUsers() {
+        return await User.findAll();
+    }
+
+    async createUser(userData) {
+        return await User.create(userData);
+    }
+}
+
+module.exports = new UserRepository();

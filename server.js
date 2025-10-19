@@ -1,4 +1,5 @@
 const express = require('express');
+const { connectDB } = require('./database');
 
 const AboutUsRouter = require('./routes/AboutUsRouter');
 const greetingRoutes = require('./routes/greetingRoutes');
@@ -22,6 +23,11 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 3000;
+
+connectDB().then(() => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}).catch((error) => {
+  console.error('Failed to connect to the database:', error);
 });

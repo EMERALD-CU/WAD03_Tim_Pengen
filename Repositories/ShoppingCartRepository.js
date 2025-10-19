@@ -1,5 +1,5 @@
-// Tugasnya: menemukan, membuat, dan menyimpan data keranjang.
-const db = require('../Data/dummyDatabase.js');
+const {db} = require('../database');
+const { ShoppingCart } = db.ShoppingCart;
 
 const findByUsername = (username) => {
     return db.shoppingCartRepository.find(cart => cart.username === username);
