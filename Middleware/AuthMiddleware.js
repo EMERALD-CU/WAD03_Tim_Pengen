@@ -1,4 +1,4 @@
-const dummyDatabase = require('../Data/dummyDatabase');
+const sequelize = require('../database').sequelize;
 
 const isSeller = (req, res, next) => {
     
