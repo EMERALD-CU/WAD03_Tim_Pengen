@@ -1,10 +1,10 @@
 const {db} = require('../database');
-const { User } = db.User;
+// const { User } = db.User;
 
 class UserRepository {
 
     async findByUsername(username) {
-        return await User.findOne({
+        return await db.User.findOne({
             where: {
                 username: username
             }
