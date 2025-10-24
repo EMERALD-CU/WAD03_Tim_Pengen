@@ -1,115 +1,61 @@
-// Controllers/UserControllers.js - Menggunakan Internal Dummy Data
+// controllers/UserControllers.js
+const userService = require('../Services/Userservice');
 
-
-exports.isBuyer = (req, res, next) => {
-    // Ambil username dari parameter URL, karena semua rute cart akan seperti '/:username/...'
-    const { username } = req.params; 
-    
-    // Cari user di data kita
-    const user = users.find(u => u.username === username); 
-
-    // Cek apakah pengguna ada DAN perannya adalah 'buyer'
-    if (!user || user.role !== 'buyer') {
-        // 403 Forbidden: Akses ditolak
-        return res.status(403).json({ message: "Access denied. Only the buyer who owns this cart can perform this action." });
+exports.isBuyer = async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        await userService.isBuyer(username);
+        next();
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
-    
-    next(); // Jika lolos, lanjutkan ke fungsi controller berikutnya
 };
 
-// Menggunakan let untuk array data utama (GLOBAL SCOPE CONTROLLER)
-let users = [
-    {
-        "username": "EMRLD",
-        "name": "Emerald",
-        "email": "emer@cakyu.com",
-        "role": "buyer"
-    },
-    {
-        "username": "Hsn",
-        "name": "Husni",
-        "email": "husni@cakyu.com",
-        "role": "seller"
-    },
-    {
-        "username": "tNv",
-        "name": "Tita Noviana",
-        "email": "tita@cakyu.com",
-        "role": "seller"
-    }
-];
-
-// 1. GET /
-exports.getUsers = (req, res) => {
-    // Mengembalikan seluruh array pengguna
-    return res.status(200).json(users);
+exports.getUsers = async (req, res) => {
+    const users = await userService.getAllUsers();
+    res.status(200).json(users);
 };
 
-// 2. GET /:username
-exports.getUserByUsername = (req, res) => {
-    const { username } = req.params;
-    const user = users.find(u => u.username === username);
+exports.getUserByUsername = async (req, res) => {
+    try {
+        const { username } = req.params;
+        const user = await userService.getUserByUsername(username);
 
-    if (!user) {
-        // Menggunakan 404 Not Found (lebih tepat)
-        return res.status(404).json({ message: `User with username ${username} not found.` });
+        if (!user) {
+            return res.status(404).json({ message: `User ${username} not found.` });
+        }
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-    return res.status(200).json(user);
 };
 
-// 3. POST /
-exports.createUser = (req, res) => {
-    const newUser = req.body;
-
-    // Tambahkan pengaman (walaupun error utama sudah hilang)
-    if (!newUser || !newUser.username) {
-        return res.status(400).json({ message: 'Request body is malformed or missing username.' });
+exports.createUser = async (req, res) => {
+    try {
+        const result = await userService.createUser(req.body);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
-    
-    // Validasi: memastikan username unik
-    if (users.some(u => u.username === newUser.username)) {
-        return res.status(409).json({ message: 'Username already exists.' }); 
-    }
-
-    // Validasi properti wajib
-    if (!newUser.name || !newUser.email || !newUser.role) {
-        return res.status(400).json({ message: 'Missing required properties: name, email, or role.' }); 
-    }
-
-    users.push(newUser); 
-    return res.status(201).json(newUser); // 201 Created
 };
 
-
-// 4. PATCH /:username
-exports.updateUser = (req, res) => {
-    let { username } = req.params;
-    let updatedData = req.body;
-    
-    const userIndex = users.findIndex(u => u.username === username);
-
-    if (userIndex === -1) {
-        return res.status(404).json({ message: `User with username ${username} not found.` });
+exports.updateUser = async (req, res) => {
+    try {
+        const { username } = req.params;
+        const updated = await userService.updateUser(username, req.body);
+        res.status(200).json(updated);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
-
-    delete updatedData.username; 
-    
-    // Gabungkan data lama dengan data baru
-    users[userIndex] = { ...users[userIndex], ...updatedData };
-    
-    return res.status(200).json(users[userIndex]);
 };
 
-// 5. DELETE /:username
-exports.deleteUser = (req, res) => {
-    const { username } = req.params;
-    const initialLength = users.length;
-    
-    users = users.filter(u => u.username !== username);
-
-    if (users.length === initialLength) {
-        return res.status(404).json({ message: `User with username ${username} not found.` });
+exports.deleteUser = async (req, res) => {
+    try {
+        const { username } = req.params;
+        await userService.deleteUser(username);
+        res.status(204).send();
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
     }
-
-    return res.status(204).send(); // 204 No Content
 };
